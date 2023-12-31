@@ -1,5 +1,8 @@
 ﻿@page "/"
+@using Signature.App.Pages
 @using Signature.Shared
+@using System.Security.Cryptography
+@using System.Text
 
 @inject IJSRuntime JS;
 @inject IHttpClientFactory HttpClientFactory;
@@ -31,6 +34,14 @@
 <div>
     <button class="btn btn-primary mb-3" @onclick="Send">Enviar</button>
 </div>
+
+<div>
+    <button class="btn btn-primary mb-3" @onclick="TesteModal">Ler Código de Barras</button>
+    <div class="mb-3">
+        <label class="form-label">Código de Barras</label>
+        <InputText @bind-Value="BarCode" class="form-control"></InputText>
+    </div>
+</div>
 @code {
     HttpClient _httpClient;
     IJSObjectReference module;
@@ -40,6 +51,7 @@
     public string? SignatureBase64 { get; set; }
     public string? SignatureBase64Src { get; set; }
 
+    public string? BarCode { get; set; }
 
     public string? PhotoBase64 { get; set; }
     public string? PhotoBase64Src { get; set; }
@@ -51,13 +63,32 @@
         await base.OnInitializedAsync();
     }
 
+    public async Task TesteModal()
+    {
+        var barCodePage = new BarCodePage();
+        barCodePage.BarCodeChanged += OnBarCodeChanged;
+        await App.Current.MainPage.Navigation.PushModalAsync(barCodePage);
+    }
+
+    public async void OnBarCodeChanged(object? sender, string barCode)
+    {
+        await InvokeAsync(async () =>
+         {
+             BarCode = barCode;
+             StateHasChanged();
+         });
+
+        if (App.Current.MainPage.Navigation.ModalStack.Count > 0)
+            await App.Current.MainPage.Navigation.PopModalAsync();
+    }
+
     public async Task Send()
     {
         await GenerateAssignatureBase64();
 
         if (string.IsNullOrEmpty(SignatureBase64) || string.IsNullOrEmpty(PhotoBase64)) return;
 
-        var body = new SignatureResult(NFNumber,SignatureBase64, PhotoBase64);
+        var body = new SignatureResult(NFNumber, SignatureBase64, PhotoBase64);
         try
         {
             var result = await _httpClient.PostAsJsonAsync("signature", body);
