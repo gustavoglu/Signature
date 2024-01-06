@@ -1,27 +1,27 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Signature.App</a>
+﻿@using Microsoft.AspNetCore.Components.Sections
+
+
+<nav class="navbar mb-3" role="navigation" aria-label="main navigation" style="box-shadow: 0 3px 10px rgb(0 0 0 / 0.1);">
+    <div class="navbar-brand">
+
+        <div style="display:flex;align-items:center;">
+
+            <div>
+                <img src="@logoSrc" width="80" height="50"/>
+            </div>
+
+            <div class="ml-3" style="font-size:medium;font-weight:bold;">
+                <SectionOutlet SectionName="page-title"></SectionOutlet>
+            </div>
+        </div>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
     </div>
-</div>
+</nav>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+@code {
+    string logoSrc = "https://www.snakeriveranimalshelter.org/wp-content/uploads/example-logo.jpg";
+}

@@ -1,0 +1,92 @@
+﻿@page "/nota-fiscal/comprovante/signature"
+
+@inject IHttpClientFactory HttpClientFactory;
+@inject IJSRuntime JS;
+@inject NotaFiscalState NotaFiscalState;
+
+@implements IAsyncDisposable;
+
+<PageTitle>@pageTitle</PageTitle>
+<SectionContent SectionName="page-title">@pageTitle</SectionContent>
+
+<div style="height:90vh;">
+
+    <div style="height:100%;display:flex;flex-direction:column; justify-content:space-between ;gap:10px;">
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+
+            <div class="is-size-5">Assine a baixo:</div>
+
+            <canvas style="background-color: floralwhite;" height="250" width="300"></canvas>
+
+            <div style="display:flex;justify-content:end;">
+                <button class="button is-info" @onclick="Clear">
+                    <i class="fa-solid fa-rotate-left mr-3"></i> Limpar
+                </button>
+            </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column; gap:10px;width:100%;">
+            <button class="button is-link is-fullwidth" @onclick="Next">Avançar</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    HttpClient _httpClient;
+    IJSObjectReference _module;
+
+    private string pageTitle = "Comprovante / Assinatura";
+
+    public string? SignatureBase64 { get; set; }
+    public string? SignatureBase64Src { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        _httpClient = HttpClientFactory.CreateClient("api");
+        _module = await JS.InvokeAsync<IJSObjectReference>("import", $"./Components/Pages/NotaFiscal/ComprovanteSignature.razor.js");
+        await base.OnInitializedAsync();
+    }
+
+    public async Task Next()
+    {
+        await GenerateAssignatureBase64();
+    }
+
+    public async Task GenerateAssignatureBase64()
+    {
+        bool isEmpty = await AssignatureIsEmpty();
+        if (isEmpty) return;
+
+        string result = await _module.InvokeAsync<string>("getBase64");
+        SignatureBase64Src = result;
+        SignatureBase64 = result.Split(',')[1];
+
+        NotaFiscalState.SetComprovanteBase64(SignatureBase64);
+        NotaFiscalState.SetComprovanteBase64Src(SignatureBase64Src);
+    }
+
+    public async Task Clear()
+    {
+        await _module.InvokeVoidAsync("clear");
+
+        SignatureBase64Src = null;
+        SignatureBase64 = null;
+
+        NotaFiscalState.SetComprovanteBase64(SignatureBase64);
+        NotaFiscalState.SetComprovanteBase64Src(SignatureBase64Src);
+    }
+
+    public async Task<bool> AssignatureIsEmpty()
+    {
+        return await _module.InvokeAsync<bool>("isEmpty");
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.DisposeAsync();
+        }
+    }
+}

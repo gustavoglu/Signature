@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Signature.App.States;
 using ZXing.Net.Maui.Controls;
 
 namespace Signature.App
@@ -20,7 +21,8 @@ namespace Signature.App
 
             builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri("https://localhost:7051/api/"));
 
-           
+            builder.Services.AddSingleton<NotaFiscalState>();
+
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
