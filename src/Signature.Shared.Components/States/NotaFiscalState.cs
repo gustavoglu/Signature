@@ -1,4 +1,4 @@
-﻿namespace Signature.App.States
+﻿namespace Signature.Shared.Components.States
 {
     public class NotaFiscalState
     {

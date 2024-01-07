@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using Signature.App.States;
+using Signature.App.Services;
+using Signature.Shared.Components.States;
+using Signature.Shared.Interfaces;
 using ZXing.Net.Maui.Controls;
 
 namespace Signature.App
@@ -22,6 +24,9 @@ namespace Signature.App
             builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri("https://localhost:7051/api/"));
 
             builder.Services.AddSingleton<NotaFiscalState>();
+
+            builder.Services.AddSingleton<IBarCodeReadService, BarCodeService>();
+            builder.Services.AddSingleton<ICameraService, CameraService>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

@@ -1,6 +1,8 @@
-﻿<Router AppAssembly="@typeof(MauiProgram).Assembly">
+﻿@using Signature.Shared.Components.Components.Layout;
+
+<Router AppAssembly="@typeof(MauiProgram).Assembly" AdditionalAssemblies="new[] { typeof(Shared.Components._Imports).Assembly }">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Components.Layout.MainLayout)" />
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
 </Router>

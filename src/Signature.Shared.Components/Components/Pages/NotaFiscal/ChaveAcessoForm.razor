@@ -1,5 +1,6 @@
 ﻿@page "/nota-fiscal/chave-acesso/form"
-@using Signature.App.Pages;
+@using Signature.Shared.Interfaces
+@inject IBarCodeReadService BarCodeReadService;
 
 @inject NotaFiscalState NotaFiscalState;
 
@@ -37,7 +38,7 @@
 </EditForm>
 
 
-@code {
+    @code {
 
     [SupplyParameterFromQuery]
     [Parameter]
@@ -56,21 +57,22 @@
 
     public async Task OpenReadBarCodePage()
     {
-        var barCodePage = new BarCodePage();
-        barCodePage.BarCodeChanged += OnBarCodeChanged;
-        await App.Current.MainPage.Navigation.PushModalAsync(barCodePage);
+        await BarCodeReadService.ReadBarCode();
+        // var barCodePage = new BarCodePage();
+        // barCodePage.BarCodeChanged += OnBarCodeChanged;
+        // await App.Current.MainPage.Navigation.PushModalAsync(barCodePage);
     }
 
     public async void OnBarCodeChanged(object? sender, string barCode)
     {
-        await InvokeAsync(async () =>
-         {
-             model.ChaveAcesso = barCode;
-             StateHasChanged();
-         });
+        // await InvokeAsync(async () =>
+        //  {
+        //      model.ChaveAcesso = barCode;
+        //      StateHasChanged();
+        //  });
 
-        if (App.Current.MainPage.Navigation.ModalStack.Count > 0)
-            await App.Current.MainPage.Navigation.PopModalAsync();
+        // if (App.Current.MainPage.Navigation.ModalStack.Count > 0)
+        //     await App.Current.MainPage.Navigation.PopModalAsync();
     }
 
     public class NotaFiscalChaveAcessoForm
