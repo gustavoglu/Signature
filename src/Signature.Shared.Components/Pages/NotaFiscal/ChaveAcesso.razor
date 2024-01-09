@@ -1,6 +1,7 @@
 ﻿@page "/"
-@using static Signature.Shared.Components.Components.NavOptionList
+@using static Signature.Shared.Components.NavOptionList
 @inject NotaFiscalState NotaFiscalState;
+@inject MainState MainState;
 
 @inject NavigationManager NavigationManager;
 
@@ -9,7 +10,7 @@
 
 
 <div style="display:flex; flex-direction:column; justify-content:center;height:95vh;">
-    <NavOptionList Items="items" OnClick="NavOptionListOnClick"/>
+    <NavOptionList Items="items" OnClick="NavOptionListOnClick" />
 </div>
 
 
@@ -20,13 +21,15 @@
     protected override void OnInitialized()
     {
         NotaFiscalState.Clear();
+
+        string readCodeBarRoute = MainState.IsWeb ? "/nota-fiscal/chave-acesso/web/bar-code-read" : "nota-fiscal/chave-acesso/form?useBarCodeRead=true";
+
+        items = new List<NavOptionItem> {
+            new NavOptionItem("fa-solid fa-keyboard", "Digitar manualmente", "nota-fiscal/chave-acesso/form"),
+            new NavOptionItem("fa-solid fa-barcode", "Ler o código de barras", readCodeBarRoute), };
     }
 
-    public List<NavOptionItem> items = new List<NavOptionItem>
-    {
-        new NavOptionItem("fa-solid fa-keyboard","Digitar manualmente", "nota-fiscal/chave-acesso/form"),
-        new NavOptionItem("fa-solid fa-barcode","Ler o código de barras", "nota-fiscal/chave-acesso/form?useBarCodeRead=true"),
-    };
+    public List<NavOptionItem> items = new();
 
     public void NavOptionListOnClick(NavOptionItem item)
     {

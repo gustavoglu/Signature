@@ -1,0 +1,56 @@
+﻿@page "/nota-fiscal/comprovante/photo-web";
+
+@inherits ComprovantePhoto;
+@inject NotaFiscalState NotaFiscalState;
+@inject IJSRuntime JS;
+
+<PageTitle>@pageTitle</PageTitle>
+<SectionContent SectionName="page-title">@pageTitle</SectionContent>
+
+
+<div style="height:90vh;">
+    <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content: space-between;">
+
+        <div style="display:flex;flex-direction:column;">
+            <video class="mb-3" id="videoFeed" width="320" height="240" />
+            <canvas class="d-none mb-3" id="currentFrame" width="320" height="240" />
+        </div>
+
+        <div style="display:flex;flex-direction:column; gap:10px;width:100%;">
+            <button class="button is-info is-fullwidth" @onclick="TakePhotoAndGenerateBase64">
+                <i class="fa-solid fa-camera mr-3"></i> @TiraFotoLabel
+            </button>
+            <button class="button is-link is-fullwidthd">Avançar</button>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    IJSObjectReference _module;
+
+    public string TiraFotoLabel { get { return string.IsNullOrEmpty(PhotoBase64) ? "Tirar foto" : "Tirar outra foto"; } }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Signature.Shared.Components/Pages/NotaFiscal/ComprovantePhotoWebCam.razor.js");
+
+        await StartVideo();
+    }
+
+    private async Task StartVideo()
+    {
+        await _module.InvokeVoidAsync("startVideo", "videoFeed");
+    }
+
+    public override async Task TakePhotoAndGenerateBase64()
+    {
+        string result = await _module.InvokeAsync<string>("getFrameToBase64", "videoFeed", "currentFrame");
+        PhotoBase64Src = result;
+        PhotoBase64 = result.Split(',')[1];
+
+        NotaFiscalState.SetComprovanteBase64(PhotoBase64);
+        NotaFiscalState.SetComprovanteBase64Src(PhotoBase64Src);
+    }
+
+}

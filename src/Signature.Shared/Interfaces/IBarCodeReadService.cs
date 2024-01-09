@@ -3,5 +3,6 @@
     public interface IBarCodeReadService
     {
         Task<string> ReadBarCode();
+        Task StopRead();
     }
 }

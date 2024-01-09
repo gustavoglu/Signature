@@ -4,8 +4,6 @@
 @inject IJSRuntime JS;
 @inject NotaFiscalState NotaFiscalState;
 
-@implements IAsyncDisposable;
-
 <PageTitle>@pageTitle</PageTitle>
 <SectionContent SectionName="page-title">@pageTitle</SectionContent>
 
@@ -34,7 +32,6 @@
 
 @code {
     HttpClient _httpClient;
-    IJSObjectReference _module;
 
     private string pageTitle = "Comprovante / Assinatura";
 
@@ -44,7 +41,6 @@
     protected async override Task OnInitializedAsync()
     {
         _httpClient = HttpClientFactory.CreateClient("api");
-        _module = await JS.InvokeAsync<IJSObjectReference>("import", $"./Components/Pages/NotaFiscal/ComprovanteSignature.razor.js");
         await base.OnInitializedAsync();
     }
 
@@ -58,7 +54,7 @@
         bool isEmpty = await AssignatureIsEmpty();
         if (isEmpty) return;
 
-        string result = await _module.InvokeAsync<string>("getBase64");
+        string result = await JS.InvokeAsync<string>("getBase64Signature");
         SignatureBase64Src = result;
         SignatureBase64 = result.Split(',')[1];
 
@@ -68,7 +64,7 @@
 
     public async Task Clear()
     {
-        await _module.InvokeVoidAsync("clear");
+        await JS.InvokeVoidAsync("clearSignature");
 
         SignatureBase64Src = null;
         SignatureBase64 = null;
@@ -79,14 +75,6 @@
 
     public async Task<bool> AssignatureIsEmpty()
     {
-        return await _module.InvokeAsync<bool>("isEmpty");
-    }
-
-    async ValueTask IAsyncDisposable.DisposeAsync()
-    {
-        if (_module is not null)
-        {
-            await _module.DisposeAsync();
-        }
+        return await JS.InvokeAsync<bool>("isEmptySignature");
     }
 }

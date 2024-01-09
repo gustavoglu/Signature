@@ -4,9 +4,9 @@ namespace Signature.Site.Services
 {
     public class CameraService : ICameraService
     {
-        public async Task<string?> TakePhotoAndGenerateBase64()
+        public Task<string?> TakePhotoAndGenerateBase64()
         {
-            return "teste";
+            return null;
         }
     }
 }

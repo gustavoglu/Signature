@@ -1,0 +1,27 @@
+﻿@foreach (var item in Items)
+{
+    <a class="box mb-2" @onclick="()=>OnClickHandler(item)">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-weight:bold;">
+                <i class="@item.Icon mr-3"></i>
+                <span>@item.Title</span>
+            </div>
+            <i class="fa-solid fa-angle-right"></i>
+        </div>
+    </a>
+}
+
+
+
+@code {
+    [Parameter, EditorRequired]
+    public List<NavOptionItem> Items { get; set; }
+
+    [Parameter]
+    public EventCallback<NavOptionItem> OnClick { get; set; }
+
+    public void OnClickHandler(NavOptionItem item) => OnClick.InvokeAsync(item);
+
+    public record NavOptionItem(string Icon, string Title, string? Route = null);
+
+}

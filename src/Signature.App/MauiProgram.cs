@@ -23,10 +23,15 @@ namespace Signature.App
 
             builder.Services.AddHttpClient("api", client => client.BaseAddress = new Uri("https://localhost:7051/api/"));
 
-            builder.Services.AddSingleton<NotaFiscalState>();
-
-            builder.Services.AddSingleton<IBarCodeReadService, BarCodeService>();
+            builder.Services.AddScoped<IBarCodeReadService, BarCodeReadService>();
+            builder.Services.AddScoped<IDeviceService, DeviceService>();
             builder.Services.AddSingleton<ICameraService, CameraService>();
+
+            builder.Services.AddSingleton<NotaFiscalState>();
+            builder.Services.AddSingleton<MainState>();
+
+
+
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

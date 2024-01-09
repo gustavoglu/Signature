@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -15,6 +15,30 @@
     <EmbeddedResource Remove="Pages\**" />
     <None Remove="Layout\**" />
     <None Remove="Pages\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Layout\MainLayout.razor" />
+    <Content Include="Layout\NavMenu.razor" />
+    <Content Include="Pages\NotaFiscal\ChaveAcesso.razor" />
+    <Content Include="Pages\NotaFiscal\ChaveAcessoForm.razor" />
+    <Content Include="Pages\NotaFiscal\Comprovante.razor" />
+    <Content Include="Pages\NotaFiscal\ComprovantePhoto.razor" />
+    <Content Include="Pages\NotaFiscal\ComprovantePhotoWebCam.razor" />
+    <Content Include="Pages\NotaFiscal\ComprovanteSignature.razor" />
+    <Content Include="Pages\NotaFiscal\ReadCodeBarWeb.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Layout\MainLayout.razor.css" />
+    <None Include="Layout\NavMenu.razor.css" />
+    <None Include="Pages\NotaFiscal\ComprovantePhotoWebCam.razor.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Pages\NotaFiscal\ComprovanteSignature.razor.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="pages\notafiscal\ReadCodeBarWeb.razor.js" />
   </ItemGroup>
 
 

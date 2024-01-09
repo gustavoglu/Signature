@@ -1,6 +1,6 @@
 ﻿using Signature.Shared.Interfaces;
 
-namespace Signature.Site.Pages
+namespace Signature.Presentation.Site.Services
 {
     public class BarCodeService : IBarCodeReadService
     {

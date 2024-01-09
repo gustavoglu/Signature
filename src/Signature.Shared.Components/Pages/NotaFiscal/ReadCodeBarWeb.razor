@@ -1,0 +1,100 @@
+﻿@page "/nota-fiscal/chave-acesso/web/bar-code-read";
+
+@using Microsoft.JSInterop;
+@using Signature.Shared.Components.States;
+
+
+@inherits ComprovantePhoto;
+@inject NavigationManager NavigationManager;
+@inject NotaFiscalState NotaFiscalState;
+@inject IJSRuntime JS;
+
+@implements IDisposable;
+
+
+<PageTitle>@pageTitle</PageTitle>
+<SectionContent SectionName="page-title">@pageTitle</SectionContent>
+
+
+<div style="height:90vh;">
+    <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content: space-between;">
+
+        <div style="display:flex;flex-direction:column;">
+            <div class="mb-3" id="videoFeed" />
+            <div class="h3">@CodeBar</div>
+            @* <canvas class="d-none mb-3" id="currentFrame" width="320" height="240" /> *@
+        </div>
+
+        <div style="display:flex;flex-direction:column; gap:10px;width:100%;">
+
+            <button class="button is-link is-fullwidthd">Avançar</button>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    IJSObjectReference _module;
+
+    public string? CodeBar { get; set; }
+
+    private CancellationTokenSource _cancellationTokenSource;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Signature.Shared.Components/Pages/NotaFiscal/ReadCodeBarWeb.razor.js");
+        _cancellationTokenSource = new CancellationTokenSource();
+        VerifyCodeBarValue();
+    }
+
+    private async Task VerifyCodeBarValue()
+    {
+        while (!_cancellationTokenSource.IsCancellationRequested)
+        {
+            try
+            {
+                string? codeBarValue = await GetCodeBarValue();
+                if (!string.IsNullOrEmpty(codeBarValue))
+                {
+                    CodeBar = codeBarValue;
+                    NotaFiscalState.SetChaveAcesso(CodeBar);
+                    NavigationManager.NavigateTo("nota-fiscal/chave-acesso/form");
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+                Console.WriteLine($"Error {msg}");
+            }
+
+            await Task.Delay(1000);
+        }
+    }
+
+    private async Task<string?> GetCodeBarValue()
+    {
+        return await _module.InvokeAsync<string?>("getCodeBar");
+    }
+
+    private async Task StartVideo()
+    {
+        await JS.InvokeVoidAsync("startVideo", "videoFeed");
+    }
+
+    public override async Task TakePhotoAndGenerateBase64()
+    {
+        string result = await JS.InvokeAsync<string>("getFrameToBase64Video", "videoFeed", "currentFrame");
+        PhotoBase64Src = result;
+        PhotoBase64 = result.Split(',')[1];
+
+        NotaFiscalState.SetComprovanteBase64(PhotoBase64);
+        NotaFiscalState.SetComprovanteBase64Src(PhotoBase64Src);
+    }
+
+    public void Dispose()
+    {
+        _cancellationTokenSource.Cancel();
+    }
+
+
+}

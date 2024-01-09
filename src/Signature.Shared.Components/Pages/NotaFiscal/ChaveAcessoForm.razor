@@ -1,0 +1,85 @@
+﻿@page "/nota-fiscal/chave-acesso/form"
+@using Signature.Shared.Interfaces
+@inject IBarCodeReadService BarCodeReadService;
+@inject IJSRuntime JS;
+
+@inject NotaFiscalState NotaFiscalState;
+
+@inject NavigationManager NavigationManager;
+
+<PageTitle>@pageTitle</PageTitle>
+<SectionContent SectionName="page-title">@pageTitle</SectionContent>
+<EditForm Model="model" OnValidSubmit="OnValidSubmitHandler">
+    <DataAnnotationsValidator />
+    <div style="height:90vh">
+
+
+        <div style="height:32%;">
+        </div>
+
+        <div style="height:32%;">
+            <div class="field">
+                <label class="label">Chave de acesso</label>
+                <div class="control has-icons-left has-icons-right">
+                    <InputText class="input" maxlength="44" minlength="44" @bind-Value="model.ChaveAcesso" type="text" placeholder="Preencha a chave de acesso"></InputText>
+                    <span class="icon is-small is-left">
+                        <i class="fa-solid fa-barcode"></i>
+                    </span>
+                </div>
+                <ValidationMessage class="help is-danger" For="()=>model.ChaveAcesso" />
+            </div>
+        </div>
+
+        <div style="height:32%;display:flex;align-items:end;">
+            <button type="submit" class="button is-link is-fullwidth">Avançar</button>
+        </div>
+
+
+    </div>
+</EditForm>
+
+
+@code {
+
+    [SupplyParameterFromQuery]
+    [Parameter]
+    public bool UseBarCodeRead { get; set; }
+
+    private string pageTitle = "NF / Chave de acesso";
+
+    private NotaFiscalChaveAcessoForm model = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        model.ChaveAcesso = NotaFiscalState.ChaveAcesso;
+        if (UseBarCodeRead)
+            await OpenReadBarCodePage();
+    }
+
+
+    public async Task OpenReadBarCodePage()
+    {
+        string barCode = await BarCodeReadService.ReadBarCode();
+
+        if (!string.IsNullOrEmpty(barCode))
+            model.ChaveAcesso = barCode;
+
+        await BarCodeReadService.StopRead();
+
+    }
+
+    public class NotaFiscalChaveAcessoForm
+    {
+        [Required(ErrorMessage = "Campo Obrigatório")]
+        [MaxLength(44, ErrorMessage = "O campo pode ter no máximo 44 caracteres")]
+        [MinLength(44, ErrorMessage = "O campo precisa ter no mínimo 44 caracteres")]
+        public string? ChaveAcesso { get; set; }
+    }
+
+
+    public void OnValidSubmitHandler()
+    {
+        NotaFiscalState.SetChaveAcesso(model.ChaveAcesso);
+        NavigationManager.NavigateTo("nota-fiscal/comprovante");
+    }
+}

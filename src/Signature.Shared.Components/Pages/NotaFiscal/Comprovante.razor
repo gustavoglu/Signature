@@ -1,0 +1,37 @@
+﻿@page "/nota-fiscal/comprovante"
+@inject IJSRuntime JS;
+@inject MainState MainState;
+@using static Signature.Shared.Components.NavOptionList
+
+
+@inject NavigationManager NavigationManager;
+
+<PageTitle>@pageTitle</PageTitle>
+<SectionContent SectionName="page-title">@pageTitle</SectionContent>
+
+<div style="display:flex; flex-direction:column; justify-content:center;height:95vh;">
+    <NavOptionList Items="items" OnClick="NavOptionListOnClick" />
+</div>
+
+@code {
+    private string pageTitle = "NF / Comprovante";
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        items = new List<NavOptionItem>
+                    {
+                        new NavOptionItem("fa-solid fa-camera","Tirar foto", MainState.IsWeb ? "nota-fiscal/comprovante/photo-web" : "nota-fiscal/comprovante/photo" ),
+                        new NavOptionItem("fa-solid fa-signature","Assinar", "nota-fiscal/comprovante/signature"),
+                    };
+    }
+
+
+    public List<NavOptionItem> items = new();
+
+    public void NavOptionListOnClick(NavOptionItem item)
+    {
+        if (string.IsNullOrEmpty(item.Route)) return;
+        NavigationManager.NavigateTo(item.Route);
+    }
+}

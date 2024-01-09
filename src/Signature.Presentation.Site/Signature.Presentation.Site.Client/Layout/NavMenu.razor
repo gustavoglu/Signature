@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Components.Sections
+
+
+<nav class="navbar mb-3" role="navigation" aria-label="main navigation" style="box-shadow: 0 3px 10px rgb(0 0 0 / 0.1);">
+    <div class="navbar-brand">
+
+        <div style="display:flex;align-items:center;">
+
+            <div>
+                <img src="@logoSrc" width="80" height="50"/>
+            </div>
+
+            <div class="ml-3" style="font-size:medium;font-weight:bold;">
+                <SectionOutlet SectionName="page-title"></SectionOutlet>
+            </div>
+        </div>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+</nav>
+
+@code {
+    string logoSrc = "https://www.snakeriveranimalshelter.org/wp-content/uploads/example-logo.jpg";
+}

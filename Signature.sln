@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signature.Shared", "src\Sig
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signature.Shared.Components", "src\Signature.Shared.Components\Signature.Shared.Components.csproj", "{1B6411E8-7B8A-4080-A7B2-CE47D8C2B23C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Signature.Site", "src\Signature.Site\Signature.Site.csproj", "{331AEA37-A137-4C6F-B2E9-79A17D142028}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signature.Site", "src\Signature.Site\Signature.Site.csproj", "{331AEA37-A137-4C6F-B2E9-79A17D142028}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Shared", "1 - Shared", "{1E098E2D-BBD6-42D9-8DF9-F492F37F358E}"
 EndProject
